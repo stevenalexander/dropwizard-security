@@ -51,4 +51,19 @@ public class User {
         this.displayRole = displayRole;
         return this;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User)) return false;
+
+        User that = (User) o;
+
+        if (!getUsername().equals(that.getUsername())) return false;
+        if (!getPassword().equals(that.getPassword())) return false;
+        if (!getDisplayName().equals(that.getDisplayName())) return false;
+        if (!getDisplayRole().equals(that.getDisplayRole())) return false;
+
+        return true;
+    }
 }

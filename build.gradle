@@ -27,6 +27,7 @@ buildscript {
 // Set our project variables
 project.ext {
     dropwizardVersion = '0.6.2'
+    jerseyVersion = '1.17.1'
 }
 
 repositories {
@@ -35,7 +36,11 @@ repositories {
 
 dependencies {
     compile (
-       'com.yammer.dropwizard:dropwizard-core:' + dropwizardVersion
+        'com.yammer.dropwizard:dropwizard-core:' + dropwizardVersion,
+        'com.sun.jersey:jersey-client:' + jerseyVersion
+    )
+    testCompile (
+        'com.yammer.dropwizard:dropwizard-testing:' + dropwizardVersion
     )
 }
 
