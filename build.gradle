@@ -1,0 +1,59 @@
+apply plugin: 'java'
+apply plugin: 'gradle-one-jar'
+apply plugin: 'application'
+apply plugin: 'idea'
+
+// Use Java 7 by default
+sourceCompatibility = '1.7'
+targetCompatibility = '1.7'
+
+// UTF-8 should be standard by now. So use it!
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+// The main class of the application
+mainClassName = 'com.example.ExampleService'
+
+// Add Gradle OneJar Plugin, see https://github.com/rholder/gradle-one-jar
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.github.rholder:gradle-one-jar:1.0.3'
+    }
+}
+
+// Set our project variables
+project.ext {
+    dropwizardVersion = '0.6.2'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile (
+       'com.yammer.dropwizard:dropwizard-core:' + dropwizardVersion
+    )
+}
+
+// Configure the oneJar task
+task oneJar(type: OneJar) {
+    mainClass = mainClassName
+}
+
+// Configure the run task to start the Dropwizard service
+run {
+    args 'server', './config.yml'
+
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.4'
+}
+
+artifacts {
+    oneJar
+}

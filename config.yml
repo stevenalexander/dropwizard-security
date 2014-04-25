@@ -1,0 +1,4 @@
+http:
+    rootPath: "/*"
+    port: 9050
+    adminPort: 9051
