@@ -7,6 +7,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+import java.util.Iterator;
 import java.util.Set;
 
 import static com.yammer.dropwizard.testing.JsonHelpers.asJson;
@@ -39,35 +40,13 @@ public class UserTests {
 
     // Should be replaced with individual class field validator tests
     @Test
-    public void validate_all_null() throws Exception {
+    public void validate_not_null_or_empty() throws Exception {
         User user = new User();
 
         Set<ConstraintViolation<User>> constraintViolations =
                 validator.validate(user);
 
         assertEquals(4, constraintViolations.size());
-        assertEquals(NULL_ERROR_MESSAGE, constraintViolations.iterator().next().getMessage());
-        assertEquals(NULL_ERROR_MESSAGE, constraintViolations.iterator().next().getMessage());
-        assertEquals(NULL_ERROR_MESSAGE, constraintViolations.iterator().next().getMessage());
-        assertEquals(NULL_ERROR_MESSAGE, constraintViolations.iterator().next().getMessage());
-    }
-
-    // Should be replaced with individual class field validator tests
-    @Test
-    public void validate_all_empty() throws Exception {
-        User user = new User()
-                .setUsername("")
-                .setPassword("")
-                .setDisplayName("")
-                .setDisplayRole("");
-
-        Set<ConstraintViolation<User>> constraintViolations =
-                validator.validate(user);
-
-        assertEquals(4, constraintViolations.size());
-        assertEquals(EMPTY_ERROR_MESSAGE, constraintViolations.iterator().next().getMessage());
-        assertEquals(EMPTY_ERROR_MESSAGE, constraintViolations.iterator().next().getMessage());
-        assertEquals(EMPTY_ERROR_MESSAGE, constraintViolations.iterator().next().getMessage());
         assertEquals(EMPTY_ERROR_MESSAGE, constraintViolations.iterator().next().getMessage());
     }
 
