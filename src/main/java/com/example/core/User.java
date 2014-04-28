@@ -1,18 +1,29 @@
 package com.example.core;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.validator.constraints.NotEmpty;
+
+import javax.validation.constraints.NotNull;
 
 public class User {
 
+    @NotNull
+    @NotEmpty
     @JsonProperty
     private String username;
 
+    @NotNull
+    @NotEmpty
     @JsonProperty
     private String password;
 
+    @NotNull
+    @NotEmpty
     @JsonProperty
     private String displayName;
 
+    @NotNull
+    @NotEmpty
     @JsonProperty
     private String displayRole;
 
