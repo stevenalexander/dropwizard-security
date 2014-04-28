@@ -2,12 +2,14 @@ package com.example.resources;
 
 import com.example.core.User;
 
+import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.LinkedList;
 import java.util.List;
 
 @Path("/user")
+@Consumes({MediaType.APPLICATION_JSON})
 @Produces({MediaType.APPLICATION_JSON})
 public class UserResource {
 
@@ -44,14 +46,18 @@ public class UserResource {
     }
 
     @POST
-    public User add() {
-        throw new WebApplicationException(405);
+    public User add(@Valid User user) {
+        return user;
+    }
+
+    @PUT
+    @Path("/{username}")
+    public User update(@PathParam("username") String username, @Valid User user) {
+        return user;
     }
 
     @DELETE
-    public void delete() {
-        throw new WebApplicationException(405);
+    @Path("/{username}")
+    public void delete(@PathParam("username") String username) {
     }
-
-
 }
