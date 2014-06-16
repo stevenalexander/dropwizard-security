@@ -53,6 +53,46 @@ Implementing the custom security provider requires three classes (in com.example
     Is injected into the service so any request decorated with the Dropwizard Auth attribute will be handled by this provider.
     Extracts credentials from requests, uses an authenticator to check them and throws WebExceptions if not authenticated.
 
+    ```
+    /**
+     * An example security provider that will look at each request when received by an endpoint using the auth attribute
+     * and check that it has a header value containing a token and will authenticate the token to get the Principle (User)
+     * for the request (otherwise throw an AuthenticationException). That Principle is the authenticated User associated
+     * with the request and the resource method handling the request can use it to check authorisation to perform actions.
+     *
+     * @param <T> The Principle class (User) to be returned when a request is authenticated
+     */
+    public class ExampleSecurityProvider<T> implements InjectableProvider <Auth, Parameter> {
+        ...
+        public ExampleSecurityProvider(Authenticator<ExampleCredentials, T> authenticator) {
+            this.authenticator = authenticator;
+        }
+        ...
+        private static class ExampleSecurityInjectable<T> extends AbstractHttpContextInjectable<T> {
+            ...
+            @Override
+            public T getValue(HttpContext c) {
+                // This is where the credentials are extracted from the request
+                final String header = c.getRequest().getHeaderValue(CUSTOM_HEADER);
+                try {
+                    if (header != null) {
+                        final Optional<T> result = authenticator.authenticate(new ExampleCredentials(header));
+                        if (result.isPresent()) {
+                            return result.get();
+                        }
+                    }
+                } catch (AuthenticationException e) {
+                    throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+                }
+
+                if (required) {
+                    throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+                }
+
+                return null;
+            }
+        }
+    ```
 
 The security provider is injected into the service in the Service class.
 
