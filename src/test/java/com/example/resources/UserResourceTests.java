@@ -2,6 +2,8 @@ package com.example.resources;
 
 import com.example.core.User;
 import com.example.core.UserTests;
+import com.example.security.ExampleAuthenticator;
+import com.example.security.ExampleSecurityProvider;
 import com.sun.jersey.api.client.GenericType;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import com.yammer.dropwizard.testing.ResourceTest;
@@ -14,6 +16,7 @@ import javax.ws.rs.core.MediaType;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class UserResourceTests extends ResourceTest {
 
@@ -23,13 +26,46 @@ public class UserResourceTests extends ResourceTest {
     @Override
     protected void setUpResources() {
         addResource(new UserResource());
+
+        // Need to add SecurityProvider to all resource tests for resources using Auth, or you get 415 response
+        // you can inject the authenticator to mock authentication results while ensuring you test true to how
+        // the call will be made
+        final ExampleAuthenticator authenticator = new ExampleAuthenticator();
+        addProvider(new ExampleSecurityProvider<>(authenticator));
     }
 
     @Test
     public void getAll() throws Exception {
-        List<User> users = client().resource("/user").get(new GenericType<List<User>>() {});
+        List<User> users = client().resource("/user")
+                                   .header(ExampleSecurityProvider.CUSTOM_HEADER, "validAdminToken")
+                                   .get(new GenericType<List<User>>() {});
         assertEquals(2, users.size());
         assertEquals("user1", users.get(0).getUsername());
+    }
+
+    @Test
+    public void getAllThrows401WhenNotAuthenticatedToken() throws Exception {
+        try {
+            client().resource("/user")
+                    .get(new GenericType<List<User>>() {});
+
+            fail("Should have thrown 401");
+        } catch (UniformInterfaceException ex) {
+            assertEquals(ex.getResponse().getStatus(), 401);
+        }
+    }
+
+    @Test
+    public void getAllThrows401WhenPrincipalNotDisplayRoleAdmin() throws Exception {
+        try {
+            client().resource("/user")
+                    .header(ExampleSecurityProvider.CUSTOM_HEADER, "validBasicToken")
+                    .get(new GenericType<List<User>>() {});
+
+            fail("Should have thrown 401");
+        } catch (UniformInterfaceException ex) {
+            assertEquals(ex.getResponse().getStatus(), 401);
+        }
     }
 
     @Test

@@ -21,7 +21,7 @@ public class ExampleAuthenticator implements Authenticator<ExampleCredentials, U
             User user = new User();
             user.setDisplayName("User for token " + credentials.getToken());
             user.setUsername(credentials.getToken());
-            user.setDisplayRole(User.ROLE_EDITOR);
+            user.setDisplayRole(credentials.getToken().contains("Admin") ? User.ROLE_ADMIN : User.ROLE_EDITOR);
 
             return Optional.fromNullable(user);
         }

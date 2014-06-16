@@ -7,6 +7,7 @@ import javax.validation.constraints.NotNull;
 
 public class User {
 
+    public static final String ROLE_ADMIN = "admin";
     public static final String ROLE_EDITOR = "editor";
 
     @NotEmpty

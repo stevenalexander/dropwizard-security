@@ -1,10 +1,12 @@
 package com.example.resources;
 
 import com.example.core.User;
+import com.yammer.dropwizard.auth.Auth;
 
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -17,8 +19,17 @@ public class UserResource {
         super();
     }
 
+    /*
+    * Using the Auth attribute will use the injected provider to authenticate all requests to this path
+    * You can also use the principal to apply authorisation in code dynamically
+     */
     @GET
-    public List<User> getAll(){
+    public List<User> getAll(@Auth User principal){
+
+        if (!principal.getDisplayRole().equals(User.ROLE_ADMIN)) {
+            throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+        }
+
         List<User> users = new LinkedList<>();
         users.add(
             new User()
