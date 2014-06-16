@@ -7,6 +7,8 @@ import javax.validation.constraints.NotNull;
 
 public class User {
 
+    public static final String ROLE_EDITOR = "editor";
+
     @NotEmpty
     @JsonProperty
     private String username;

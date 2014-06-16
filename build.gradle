@@ -37,6 +37,7 @@ repositories {
 dependencies {
     compile (
         'com.yammer.dropwizard:dropwizard-core:' + dropwizardVersion,
+        'com.yammer.dropwizard:dropwizard-auth:' + dropwizardVersion,
         'com.sun.jersey:jersey-client:' + jerseyVersion
     )
     testCompile (
